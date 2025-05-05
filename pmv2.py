@@ -13,7 +13,8 @@ MYSQL_CONFIG = {
 # Centrales y sus tópicos
 centrales = {
     "munisclem": ["/munisclem/Aire/tt", "/munisclem/Aire/hh", "/munisclem/Aire/pm25", "/munisclem/Aire/pm10", "/munisclem/Aire/fecha"],
-    "colegio11": ["/colegio11/Aire/tt", "/colegio11/Aire/hh", "/colegio11/Aire/pm25", "/colegio11/Aire/pm10", "/colegio11/Aire/fecha"]
+    "colegio11": ["/colegio11/Aire/tt", "/colegio11/Aire/hh", "/colegio11/Aire/pm25", "/colegio11/Aire/pm10", "/colegio11/Aire/fecha"],
+    "colegio22": ["/colegio22/Aire/tt", "/colegio22/Aire/hh", "/colegio22/Aire/pm25", "/colegio22/Aire/pm10", "/colegio22/Aire/fecha"]
 }
 
 # Estructura para almacenar datos temporalmente
@@ -57,7 +58,12 @@ def on_message(client, userdata, msg):
                 if value:
                     data_store[central][key] = float(value) if key != "fecha" else value
                 if all(data_store[central].values()):
-                    nombre_central = "colegio1" if central == "colegio11" else "SC"
+                    if central == "colegio11":
+                        nombre_central = "colegio1"
+                    elif central == "colegio22":
+                        nombre_central = "colegio2"
+                    else:
+                        nombre_central = "SC"
                     insertar_en_db(nombre_central, data_store[central])
                     data_store[central] = {k: None for k in data_store[central]}
     except ValueError as e:
