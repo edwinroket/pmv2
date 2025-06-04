@@ -1,19 +1,20 @@
 import paho.mqtt.client as mqtt
-import mysql.connector
+import pymysql
 import time
 
-# Configuración de la base de datos MySQL
+# Configuración de la base de datos MySQL usando pymysql
 MYSQL_CONFIG = {
-    "host": "localhost",
+    "host": "172.17.0.1",  # IP del host desde el contenedor
     "user": "aireuser",
     "password": "airepassword",
-    "database": "aire"
+    "database": "aire",
+    "port": 3306
 }
 
 # Centrales y sus tópicos
 centrales = {
     "munisclem": ["/munisclem/Aire/tt", "/munisclem/Aire/hh", "/munisclem/Aire/pm25", "/munisclem/Aire/pm10", "/munisclem/Aire/fecha"],
-    "colegio11": ["/colegio11/Aire/tt", "/colegio11/Aire/hh", "/colegio11/Aire/pm25", "/colegio11/Aire/pm10", "/colegio11/Aire/fecha"],
+    "LIA": ["/lia/Aire/tt", "/lia/Aire/hh", "/lia/Aire/pm25", "/lia/Aire/pm10", "/lia/Aire/fecha"],
     "colegio22": ["/colegio22/Aire/tt", "/colegio22/Aire/hh", "/colegio22/Aire/pm25", "/colegio22/Aire/pm10", "/colegio22/Aire/fecha"]
 }
 
@@ -24,9 +25,9 @@ data_store = {
 }
 
 def insertar_en_db(central, datos):
-    """Inserta una fila en la base de datos MySQL"""
+    """Inserta una fila en la base de datos MySQL usando pymysql"""
     try:
-        conn = mysql.connector.connect(**MYSQL_CONFIG)
+        conn = pymysql.connect(**MYSQL_CONFIG)
         cursor = conn.cursor()
         cursor.execute("""
             INSERT INTO mediciones (central, tt, hh, pm25, pm10, fecha)
@@ -36,7 +37,7 @@ def insertar_en_db(central, datos):
         cursor.close()
         conn.close()
         print(f" Insertado en DB: {central} - {datos}")
-    except mysql.connector.Error as err:
+    except pymysql.MySQLError as err:
         print(f" Error al insertar en DB: {err}")
 
 def on_connect(client, userdata, flags, rc):
