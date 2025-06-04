@@ -83,7 +83,7 @@ def iniciar_cliente():
             time.sleep(5)
 
 # Configuración del broker MQTT
-broker = "test.mosquitto.org"
+broker = "broker.hivemq.com"
 port = 1883
 
 # Inicia el sistema
